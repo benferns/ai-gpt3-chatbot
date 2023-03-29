@@ -1,9 +1,9 @@
 import { type ChatGPTMessage } from '../../components/ChatLine'
 import { OpenAIStream, OpenAIStreamPayload } from '../../utils/OpenAIStream'
 import PROMPT from '../../prompt.js'
-// break the app if the API key is missing
+
 if (!process.env.OPENAI_API_KEY) {
-  throw new Error('Missing Environment Variable OPENAI_API_KEY')
+  throw new Error('Missing Environment Variable OPENAI_API_KEY trig')
 }
 
 export const config = {
