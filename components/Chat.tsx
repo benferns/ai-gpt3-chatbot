@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Button } from './Button'
 import { type ChatGPTMessage, ChatLine, LoadingChatLine } from './ChatLine'
 import { useCookies } from 'react-cookie'
-import FUTURE_PROMPT from '../pages/prompt.js'
+import FUTURE_PROMPT from '../prompt.js'
 const COOKIE_NAME = 'nextjs-example-ai-chat-gpt3'
 
 // default first message to display in UI (not necessary to define the prompt)
