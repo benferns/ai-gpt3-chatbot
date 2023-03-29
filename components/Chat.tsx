@@ -118,6 +118,8 @@ export function Chat() {
 
       lastMessage = lastMessage + chunkValue
 
+      console.log(chunkValue)
+
       setMessages([
         ...newMessages,
         { role: 'assistant', content: lastMessage } as ChatGPTMessage,
