@@ -2,14 +2,14 @@ import { useEffect, useState } from 'react'
 import { Button } from './Button'
 import { type ChatGPTMessage, ChatLine, LoadingChatLine } from './ChatLine'
 import { useCookies } from 'react-cookie'
-
+import FUTURE_PROMPT from '../pages/prompt.txt'
 const COOKIE_NAME = 'nextjs-example-ai-chat-gpt3'
 
 // default first message to display in UI (not necessary to define the prompt)
 export const initialMessages: ChatGPTMessage[] = [
   {
     role: 'assistant',
-    content: 'Hi! I am a friendly AI assistant. Ask me anything!',
+    content: '      ',
   },
 ]
 
@@ -49,7 +49,15 @@ export function Chat() {
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [cookie, setCookie] = useCookies([COOKIE_NAME])
+  const [isFirstMessage, setIsFirstMessage] = useState(true)
 
+  useEffect(() => {
+    if (isFirstMessage) {
+      sendMessage(FUTURE_PROMPT)
+    }
+  }, [messages, isFirstMessage])
+  
+  
   useEffect(() => {
     if (!cookie[COOKIE_NAME]) {
       // generate a semi random short id
@@ -66,15 +74,20 @@ export function Chat() {
       { role: 'user', content: message } as ChatGPTMessage,
     ]
     setMessages(newMessages)
-    const last10messages = newMessages.slice(-10) // remember last 10 messages
-
+    const last25messages = newMessages.slice(-25) // remember last 10 messages
+    //insert the prompt as the first item in last messages, keeping all messages
+    last25messages.unshift({ role: 'assistant', content: FUTURE_PROMPT } as ChatGPTMessage)
+  
+    
+    setIsFirstMessage(false);
+    
     const response = await fetch('/api/chat', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        messages: last10messages,
+        messages: last25messages,
         user: cookie[COOKIE_NAME],
       }),
     })
@@ -116,7 +129,8 @@ export function Chat() {
   return (
     <div className="rounded-2xl border-zinc-100  lg:border lg:p-6">
       {messages.map(({ content, role }, index) => (
-        <ChatLine key={index} role={role} content={content} />
+        // dont' show if content starts with #
+        content.startsWith('#') ? null : <ChatLine key={index} role={role} content={content} />
       ))}
 
       {loading && <LoadingChatLine />}
